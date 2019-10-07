@@ -6,7 +6,7 @@ En esta universidad de cada materia hay un único curso y sólo vamos a manejar 
 En cambio, sí debemos conocer el historial de materias aprobadas de un estudiante. 
 De cada materia aprobada hay que saber qué materia aprobó y con qué nota.
 
-Cada materia pertenece a una única carrera. Pero, un estudiante puede estar cursando distintas carreras. En esta universidad, cada materia otorga una cantidad de _créditos_, que es un número. 
+Cada materia pertenece a una única carrera. Pero, un estudiante puede estar cursando distintas carreras. 
 
 En los ejemplos incluiremos tres carreras: _Programación_, _Medicina_ y _Derecho_.
 - Programación incluye, entre otras, estas materias: Elementos de Programación, Matemática 1, Objetos 1, Objetos 2, Objetos 3, Trabajo Final, Bases de Datos. 
@@ -15,12 +15,12 @@ En los ejemplos incluiremos tres carreras: _Programación_, _Medicina_ y _Derech
 
 _Roque_ es un estudiante muy inquieto, que está cursando programación y medicina. De programación, tiene aprobadas Matemática 1 y Objetos 1. 
 
-> **Tip**:   
-La nota con la que un estudiante aprobó una materia, no puede ser atributo del estudiante (porque un estudiante tiene muchas notas) ni de la materia (porque una materia tiene muchos estudiantes y cada uno tiene su nota). Entonces se necesita un objeto que represente "Juan Pérez aprobó Objetos 1 con 7", que es distinto tanto al objeto que representa a Juán Pérez como al objeto que representa a la materia Objetos 1.
-
 Implementar un modelo que permita resolver los siguientes **requerimientos**. 
 
 1. Registrar una materia aprobada por un estudiante indicando la nota obtenida. Si el estudiante ya tiene registrada la aprobación de la materia, se debe lanzar un error. 
+
+    > **Tip**:   
+    La nota con la que un estudiante aprobó una materia, no puede ser atributo del estudiante (porque un estudiante tiene muchas notas) ni de la materia (porque una materia tiene muchos estudiantes y cada uno tiene su nota). Entonces se necesita un objeto que represente "Juan Pérez aprobó Objetos 1 con 7", que es distinto tanto al objeto que representa a Juán Pérez como al objeto que representa a la materia Objetos 1.
 
 1. Saber para un estudiante: si tiene o no aprobada una materia, la cantidad de materias aprobadas, el promedio.
 
@@ -50,9 +50,6 @@ No se requiere que el sistema conteste nada con respecto al resultado de la insc
 
 1. Más información sobre une estudiante: dada una carrera, conocer todas las materias de esa carrera a las que se puede inscribir. Sólo vale si el estudiante está cursando esa carrera.  
 
-
-
-
 # Tests 
 Suponiendo que
 * los requisitos de Objetos 2 son Objetos 1 y Matemática 1.
@@ -71,13 +68,15 @@ Realizar estos tests:
 
 
 ## Bonus
-
+### Distintos tipos de requisitos
 Contemplar que no todas las materias ponen a otras materias como requisitos. Otras opciones son:
-   * Una cantidad de créditos: por ejemplo para hacer el Trabajo Final se necesita acumular 250 créditos previamente. 
-   * Por año, es decir, haber aprobado todas las materias del año anterior. Por ejemplo, para cursar Objetos 3, que es una materia de tercer año, es necesario haber aprobado todas las materias del segundo año. De cada materia se conoce a qué año pertence.
-   * Nada: Hay materias que no tienen ningún requerimiento, por ejemplo Elementos de Programación, no tiene ninguna condición especial.
+   * Una cantidad de créditos: por ejemplo para hacer el Trabajo Final se necesita acumular 250 créditos previamente. Para esto agrear a cada materia la cantidad de_créditos_ que otorga, que es un número. 
+   * Por año, es decir, haber aprobado todas las materias del año anterior. Por ejemplo, para cursar Objetos 3, que es una materia de tercer año, es necesario haber aprobado todas las materias del segundo año. Para esto es necesario agregar a cada materia a qué año pertence.
+   * Nada: Hay materias que no tienen ningún requerimiento, por ejemplo Elementos de Programación es una de las primeras materias y por lo tanto no tiene ninguna condición especial, cualquiera puede cursarla.
 
+Cada materia tiene sólo uno de estos tipos de requisitos: correlativas, cŕeditos, por año o nada. 
 
+### Formas de manejar la lista de espera
 Por otro lado, diferentes materias pueden tener diferentes _estrategias para manejar su lista de espera_, a saber:
 - Por orden de llegada: si te querés inscribir y no hay lugar vas a la lista de espera por llegar último
 - Elitista: entran los que tengan mejor promedio.
