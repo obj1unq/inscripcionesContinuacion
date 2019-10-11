@@ -20,9 +20,14 @@ La nota con la que un estudiante aprobó una materia, no puede ser atributo del 
 
 Implementar un modelo que permita resolver los siguientes **requerimientos**. 
 
-1. Registrar una materia aprobada por un estudiante indicando la nota obtenida. Si el estudiante ya tiene registrada la aprobación de la materia, se debe lanzar un error. 
+1. Registrar una materia aprobada por un estudiante indicando la nota obtenida. 
 
-1. Saber para un estudiante: si tiene o no aprobada una materia, la cantidad de materias aprobadas, el promedio.
+1. Saber para un estudiante: 
+    - la cantidad de materias aprobadas,
+    - el promedio, 
+    - si tiene o no aprobada una materia.
+
+1. Modificar el registro de aprobación de materia (punto 1), para que si el estudiante ya tiene registrada la aprobación de la materia, se lance un error. 
 
 1. Saber para un estudiante: la colección de materias de **todas** las carreras a las que está inscripto. P.ej. para Roque debe incluir todas las de programación y también todas las de medicina.  
 _Sugerencia_: mirar el método `flatten`, p.ej. probar `[[3,4],[6,8,2]].flatten()`. 
