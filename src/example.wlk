@@ -6,6 +6,18 @@ class Carrera {
 	}
 }
 
+class Inscripcion{
+	const property estudiante
+	var property firme
+	method usaCupo() {return firme}
+	method desinscribir(materia) {
+		materia.removerInscripcion(self)
+		if(self.usaCupo()) {
+			materia.desencolar()
+		}
+	}
+}
+
 class Cursada {
 	const property materia
 	const property nota
@@ -15,43 +27,52 @@ class Materia {
 	const requisitos = #{}
 	const cupo = 20
 	
-	const alumnosInscriptos = #{}
-	const alumnosEnEspera = []
+	const inscripciones = []
 	
 	method cumpleRequisitos(estudiante) {
 		return requisitos.all({requisito => estudiante.aprobada(requisito)})
 	}
 	
-	method inscribir(estudiante) {
-		if(alumnosInscriptos.size() < cupo) {
-			alumnosInscriptos.add(estudiante)
-		}
-		else {
-			alumnosEnEspera.add(estudiante)
+	method cupoUsado() {
+		return inscripciones.count({inscripcion => inscripcion.usaCupo()})
+	}
+	
+	method inscribir(_estudiante) {
+		self.validarNoInscripto(_estudiante)
+	    inscripciones.add(new Inscripcion(estudiante=_estudiante, firme = self.cupoUsado() < cupo))
+	}
+	
+	method tieneInscripcion(estudiante) {
+		return inscripciones.any({inscripcion => inscripcion.estudiante() == estudiante})
+	}
+	
+	method validarNoInscripto(estudiante) {
+		if(self.tieneInscripcion(estudiante)) {
+			self.error("El estudiante ya esta inscripto")
 		}
 	}
 	
-	method validarInscripto(alumno) {
-		return self.esInscriptoFirme(alumno) or alumnosEnEspera.contains(alumno)
+	method validarInscripto(estudiante) {
+		if(not self.tieneInscripcion(estudiante)) {
+			self.error("El estudiante no esta inscripto")
+		}
 	}
 	
 	method desinscribir(alumno) {
 		self.validarInscripto(alumno)
-		if(self.esInscriptoFirme(alumno)) {
-			alumnosInscriptos.remove(alumno);
-			if(alumnosEnEspera.size()>0) {
-				const nuevo = alumnosEnEspera.first()
-				alumnosEnEspera.remove(nuevo)
-				alumnosInscriptos.add(nuevo)
-			}
-		}
-		else {
-			alumnosEnEspera.remove(alumno)
+		inscripciones.find({inscripcion => inscripcion.estudiante() == alumno}).desinscribir(self)
+	}
+	method removerInscripcion(inscripcion) {
+		inscripciones.remove(inscripcion)
+	}
+	
+	method desencolar() {
+		const enEspera = inscripciones.findOrDefault({inscripcion => not inscripcion.usaCupo()}, null)
+		if(enEspera != null) {
+			enEspera.firme(true)
 		}
 	}
-	method esInscriptoFirme(estudiante) {
-		return alumnosInscriptos.contains(estudiante);
-	}
+	
 }
 
 
@@ -114,6 +135,11 @@ class Estudiante {
 		self.validarInscripcion(materia)
 		materia.inscribir(self)
 		inscriptas.add(materia)
+	}
+
+	method desinscribir(materia) {
+		materia.desinscribir(self)
+		inscriptas.remove(materia)
 	}
 	
 	method inscripcionesFirmes() {
