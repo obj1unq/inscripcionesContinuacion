@@ -1,0 +1,86 @@
+import example.*
+
+describe "Estudiante"{
+	
+	const roque
+	
+	const elementos
+	const objetos1
+	const matematica1
+	const objetos2
+	const tip
+	
+	const quimica
+	
+	const latin
+	
+	const programacion
+	const medicina
+	
+	fixture {
+		objetos1 = new Materia()
+		matematica1  = new Materia()
+		objetos2 = new Materia(requisitos=#{objetos1, matematica1})
+		quimica = new Materia()
+		latin = new Materia()
+		elementos = new Materia()
+		tip = new Materia(requisitos=#{objetos1, matematica1, elementos})
+		
+		programacion = new Carrera(materias=#{elementos, objetos1, objetos2, matematica1})
+		medicina = new Carrera(materias=#{quimica})
+		
+
+		roque = new Estudiante(carreras = #{programacion, medicina});
+		roque.aprobar(matematica1, 10)
+		roque.aprobar(objetos1, 8)
+		roque.inscribir(elementos)
+		
+			
+	}	
+	
+	test "aprobar" {
+		
+		assert.that(roque.aprobada(objetos1))
+		assert.that(roque.aprobada(matematica1))
+		assert.throwsException({roque.aprobar(objetos1)})
+		
+	}
+	
+	test "promedio" {
+		assert.equals(9, roque.promedio())
+	}
+	
+	test "aprobada" {
+		assert.that(roque.aprobada(objetos1))
+		assert.that(roque.aprobada(matematica1))
+		assert.notThat(roque.aprobada(objetos2))
+	}
+	
+	test "todas las materias de las carreras" {
+		var todas = roque.todasLasMaterias()
+		assert.that(todas.contains(objetos1))
+		assert.that(todas.contains(objetos2))
+		assert.that(todas.contains(matematica1))
+
+		assert.that(todas.contains(quimica))
+		
+	}
+	
+	test "puede inscribir" {
+		assert.notThat(roque.puedeInscribirse(elementos))
+		assert.notThat(roque.puedeInscribirse(objetos1))
+		assert.that(roque.puedeInscribirse(objetos2))
+		assert.notThat(roque.puedeInscribirse(latin))
+		assert.notThat(roque.puedeInscribirse(tip))
+	}
+	
+	test "inscribir" {
+		assert.throwsException({roque.inscribir(elementos)})
+		roque.inscribir(objetos2)
+		assert.that(roque.inscripta(elementos))
+	}
+	
+	
+	
+	
+}

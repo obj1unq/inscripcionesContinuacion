@@ -1,15 +1,18 @@
 # Inscripción a materias
 
-Queremos implementar un sistema que permita realizar la inscripción a materias de una Universidad. Ojo, prestar bien atención a las reglas del dominio, que pueden no ser exactamente iguales a las de tu universidad.
+Queremos implementar un sistema que permita realizar la inscripción a materias de una Universidad. Ojo, prestar bien atención a las reglas del dominio, que pueden no ser 
+exactamente iguales a las de tu universidad.
 
-En esta universidad de cada materia hay un único curso y sólo vamos a manejar  información de la inscripción actual, no nos interesan inscripciones anteriores. 
+En esta universidad de cada materia hay un único curso y sólo vamos a manejar  información de la inscripción actual,
+ no nos interesan inscripciones anteriores. 
 En cambio, sí debemos conocer el historial de materias aprobadas de un estudiante. 
 De cada materia aprobada hay que saber qué materia aprobó y con qué nota.
 
 Cada materia pertenece a una única carrera. Pero, un estudiante puede estar cursando distintas carreras. 
 
 En los ejemplos incluiremos tres carreras: _Programación_, _Medicina_ y _Derecho_.
-- Programación incluye, entre otras, estas materias: Elementos de Programación, Matemática 1, Objetos 1, Objetos 2, Objetos 3, Trabajo Final, Bases de Datos. 
+- Programación incluye, entre otras, estas materias: Elementos de Programación, Matemática 1, Objetos 1, Objetos 2, Objetos 3, 
+Trabajo Final, Bases de Datos. 
 - Medicina incluye Química, Biología 1, Biología 2, Anatomía General.
 - Derecho incluye Latín, Derecho Romano, Historia del Derecho Argentino, Derecho Penal 1, Derecho Penal 2.
 
@@ -27,7 +30,8 @@ Implementar un modelo que permita resolver los siguientes **requerimientos**.
     - el promedio, 
     - si tiene o no aprobada una materia.
 
-1. Modificar el registro de aprobación de materia (punto 1), para que si el estudiante ya tiene registrada la aprobación de la materia, se lance un error. 
+1. Modificar el registro de aprobación de materia (punto 1), 
+para que si el estudiante ya tiene registrada la aprobación de la materia, se lance un error. 
 
 1. Saber para un estudiante: la colección de materias de **todas** las carreras a las que está inscripto. P.ej. para Roque debe incluir todas las de programación y también todas las de medicina.  
 _Sugerencia_: mirar el método `flatten`, p.ej. probar `[[3,4],[6,8,2]].flatten()`. 
@@ -40,7 +44,9 @@ _Sugerencia_: mirar el método `flatten`, p.ej. probar `[[3,4],[6,8,2]].flatten(
     P.ej., para que un estudiante pueda inscribirse a Objetos 2, es necesario tener aprobadas Objetos 1 y Matemática 1.
 
 1. Inscribir un estudiante a una materia, verificando las condiciones de inscripción de la materia. Si no se cumplen las condiciones, lanzar un error.  
-Además, cada materia tiene un “cupo”, es decir, una cantidad máxima de estudiantes que se pueden inscribir. Para manejar el exceso en los cupos, las materias tienen una lista de espera, de estudiantes que quisieran cursar pero no tienen lugar 
+
+Además, cada materia tiene un “cupo”, es decir, una cantidad máxima de estudiantes que se pueden inscribir. 
+Para manejar el exceso en los cupos, las materias tienen una lista de espera, de estudiantes que quisieran cursar pero no tienen lugar 
 (ver punto 5).
 O sea, como resultado de la inscripción, el estudiante puede, o bien quedar confirmado, o bien quedar en lista de espera.  
 No se requiere que el sistema conteste nada con respecto al resultado de la inscripción. 
