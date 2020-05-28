@@ -27,9 +27,11 @@ Implementar un modelo que permita resolver los siguientes **requerimientos**.
     - el promedio, 
     - si tiene o no aprobada una materia.
 
-1. Modificar el registro de aprobación de materia (punto 1), para que si el estudiante ya tiene registrada la aprobación de la materia, se lance un error. 
+1. Modificar el registro de aprobación de materia (punto 1), 
+para que si el estudiante ya tiene registrada la aprobación de la materia, se lance un error. 
 
-1. Saber para un estudiante: la colección de materias de **todas** las carreras a las que está inscripto. P.ej. para Roque debe incluir todas las de programación y también todas las de medicina.  
+1. Saber para un estudiante: la colección de materias de **todas** las carreras a las que está inscripto. 
+P.ej. para Roque debe incluir todas las de programación y también todas las de medicina.  
 _Sugerencia_: mirar el método `flatten`, p.ej. probar `[[3,4],[6,8,2]].flatten()`. 
 
 1. Determinar si un estudiante puede inscribirse a una materia. Para esto se deben cumplir cuatro condiciones: 
@@ -39,10 +41,15 @@ _Sugerencia_: mirar el método `flatten`, p.ej. probar `[[3,4],[6,8,2]].flatten(
     - el estudiante debe tener aprobadas todas las materias que se declaran como _requisitos_ de la materia a la que se quiere inscribir.  
     P.ej., para que un estudiante pueda inscribirse a Objetos 2, es necesario tener aprobadas Objetos 1 y Matemática 1.
 
-1. Inscribir un estudiante a una materia, verificando las condiciones de inscripción de la materia. Si no se cumplen las condiciones, lanzar un error.  
-Además, cada materia tiene un “cupo”, es decir, una cantidad máxima de estudiantes que se pueden inscribir. Para manejar el exceso en los cupos, las materias tienen una lista de espera, de estudiantes que quisieran cursar pero no tienen lugar 
+1. Inscribir un estudiante a una materia, verificando las condiciones de inscripción de la materia. 
+Si no se cumplen las condiciones, lanzar un error.  
+
+Además, cada materia tiene un “cupo”, es decir, una cantidad máxima de estudiantes que se pueden 
+inscribir. Para manejar el exceso en los cupos, las materias tienen una lista de espera, 
+de estudiantes que quisieran cursar pero no tienen lugar 
 (ver punto 5).
-O sea, como resultado de la inscripción, el estudiante puede, o bien quedar confirmado, o bien quedar en lista de espera.  
+O sea, como resultado de la inscripción, el estudiante puede, o bien quedar confirmado, 
+o bien quedar en lista de espera.  
 No se requiere que el sistema conteste nada con respecto al resultado de la inscripción. 
 
 1. Dar de baja un estudiante de una materia. En caso de haber estudiantes en lista de espera, el primer estudiante de la lista debe obtener su lugar en la materia.
@@ -51,7 +58,10 @@ No se requiere que el sistema conteste nada con respecto al resultado de la insc
     * Los estudiantes inscriptos a una materia dada.
     * Los estudiantes en lista de espera para una materia dada.
 
-1. Brindar información útil para une estudiante, específicamente: las materias en las que está inscripto, las materias en las que quedó en lista de espera. Para esto, usar la lista de todas las materias de las carreras que cursa, resuelto en un punto anterior.
+1. Brindar información útil para une estudiante, específicamente: 
+las materias en las que está inscripto, 
+las materias en las que quedó en lista de espera. 
+Para esto, usar la lista de todas las materias de las carreras que cursa, resuelto en un punto anterior.
 
 1. Más información sobre une estudiante: dada una carrera, conocer todas las materias de esa carrera a las que se puede inscribir. Sólo vale si el estudiante está cursando esa carrera.  
 

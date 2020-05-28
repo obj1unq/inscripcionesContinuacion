@@ -1,0 +1,71 @@
+import example.*
+
+describe "inscripciones" {
+
+	var roque
+	var objetos1
+	var matematica1
+	var objetos2
+	var tip
+	
+	var quimica
+	
+	var programacion
+	var medicina
+	
+	var latin
+	
+	fixture {
+		objetos1 = new Materia()
+		matematica1 = new Materia()
+		objetos2 = new Materia(requisitos=#{objetos1, matematica1})
+		tip = new Materia(requisitos=#{objetos1, matematica1, objetos2})
+		
+		quimica = new Materia()
+		
+		latin = new Materia()
+		
+		programacion = new Carrera(materias=#{objetos1, matematica1, objetos2, tip})
+		medicina = new Carrera(materias=#{quimica})
+		
+		roque = new Estudiante(carreras=#{programacion, medicina})	
+		
+	}	
+	
+	test "todas las materias" {
+		//assert.equals(#{objetos1, matematica1, quimica}, roque.todasLasMaterias())
+		const todasLasMaterias = roque.todasLasMaterias()
+		assert.that(todasLasMaterias.contains(objetos1))
+		assert.that(todasLasMaterias.contains(matematica1))
+		assert.that(todasLasMaterias.contains(quimica))
+		assert.that(todasLasMaterias.contains(objetos2))
+		assert.that(todasLasMaterias.contains(tip))
+		assert.equals(5, todasLasMaterias.size())
+	}
+	
+	test "inscripcion" {
+		roque.aprobar(objetos1, 10)
+		assert.that(roque.aprobada(objetos1))
+		assert.throwsException({roque.aprobar(objetos1, 5)})
+	}
+	
+	test "promedio" {
+		roque.aprobar(objetos1, 10)
+		roque.aprobar(matematica1, 8)
+
+		assert.equals(9, roque.promedio())
+	}
+	
+	test "puedeInscribir" {
+		roque.inscribir(quimica)
+		roque.aprobar(matematica1, 7)
+		roque.aprobar(objetos1, 7)
+		
+		assert.that(roque.puedeInscribirse(objetos2))
+		assert.notThat(roque.puedeInscribirse(latin))
+		assert.notThat(roque.puedeInscribirse(matematica1))
+		assert.notThat(roque.puedeInscribirse(quimica))
+		assert.notThat(roque.puedeInscribirse(tip))
+	}
+	
+}
