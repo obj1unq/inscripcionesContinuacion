@@ -8,15 +8,30 @@ class Carrera {
 
 class Inscripcion{
 	const property estudiante
-	var property firme
-	method usaCupo() {return firme}
-	method desinscribir(materia) {
+	const property materia
+	
+	method usaCupo() 
+	method desinscribir() {
 		materia.removerInscripcion(self)
-		if(self.usaCupo()) {
-			materia.desencolar()
-		}
 	}
 }
+class InscripcionFirme inherits Inscripcion{
+	
+	override method usaCupo() { return true }
+	override method desinscribir() {
+		super()
+		if(materia.hayInscripcionEnEspera()) {
+			const proximo = materia.proximoEnEspera()
+			materia.removerInscripcion(proximo)
+			materia.agregarInscripcion(new InscripcionFirme(materia=proximo.materia(), estudiante = proximo.estudiante()))
+		}
+	}	
+}
+
+class InscripcionEnEspera inherits Inscripcion{
+	override method usaCupo() { return false }
+}
+
 
 class Cursada {
 	const property materia
@@ -32,14 +47,26 @@ class Materia {
 	method cumpleRequisitos(estudiante) {
 		return requisitos.all({requisito => estudiante.aprobada(requisito)})
 	}
-	
+		
 	method cupoUsado() {
 		return inscripciones.count({inscripcion => inscripcion.usaCupo()})
 	}
 	
+	method agregarInscripcion(_inscripcion) {
+	    inscripciones.add(_inscripcion)
+	}
+	
 	method inscribir(_estudiante) {
 		self.validarNoInscripto(_estudiante)
-	    inscripciones.add(new Inscripcion(estudiante=_estudiante, firme = self.cupoUsado() < cupo))
+		
+		const inscripcion = if(self.cupoUsado() < cupo)  {
+			new InscripcionFirme(estudiante=_estudiante, materia=self) 
+		}
+		else {
+			new InscripcionEnEspera(estudiante=_estudiante, materia=self)	
+		}
+		 
+	    self.agregarInscripcion(inscripcion)
 	}
 	
 	method tieneInscripcion(estudiante) {
@@ -60,8 +87,10 @@ class Materia {
 	
 	method desinscribir(alumno) {
 		self.validarInscripto(alumno)
-		inscripciones.find({inscripcion => inscripcion.estudiante() == alumno}).desinscribir(self)
+		const inscripcion = inscripciones.find({inscripcion => inscripcion.estudiante() == alumno})
+		inscripcion.desinscribir()
 	}
+	
 	method removerInscripcion(inscripcion) {
 		inscripciones.remove(inscripcion)
 	}
@@ -72,6 +101,22 @@ class Materia {
 			enEspera.firme(true)
 		}
 	}
+
+    method inscripto(_estudiante) {
+		return inscripciones.any({inscripcion => inscripcion.estudiante() == _estudiante})
+	}
+	
+	method usaCupo(_estudiante) {
+		return inscripciones.any({inscripcion => inscripcion.estudiante() == _estudiante and inscripcion.usaCupo()})
+	}
+	
+	method hayInscripcionEnEspera() {
+		return inscripciones.any({inscripcion=> not inscripcion.usaCupo()})
+	}
+
+	method proximoEnEspera() {
+		return inscripciones.find({inscripcion=> not inscripcion.usaCupo()})
+	}
 	
 }
 
@@ -79,7 +124,6 @@ class Materia {
 class Estudiante {
 	
 	const property carreras = #{}
-	const property inscriptas = #{} 
 	const cursadas = #{}
 	
 	method aprobar(_materia, _nota){
@@ -104,11 +148,11 @@ class Estudiante {
 	method aprobada(_materia) {
 		return cursadas.any({cursada => cursada.materia() == _materia})
 	}
-
-   //por ahora retorna true si está firme o en espera	
-	method inscripta(_materia) {
-		return inscriptas.contains(_materia)
+	
+	method materiasInscriptas() {
+		return self.todasLasMaterias().filter({materia=> materia.inscripto(self)})
 	}
+
 	
 	method todasLasMaterias() {
 		return carreras.map({carrera => carrera.materias()}).flatten()
@@ -117,7 +161,7 @@ class Estudiante {
 	method puedeInscribirse(_materia) {
 		return self.esDeUnaCarreraQueCursa(_materia) and 
 				not self.aprobada(_materia) and 
-				not self.inscripta(_materia) and
+				not _materia.inscripto(self) and
 				_materia.cumpleRequisitos(self)
 	}
 	
@@ -134,20 +178,26 @@ class Estudiante {
 	method inscribir(materia) {
 		self.validarInscripcion(materia)
 		materia.inscribir(self)
-		inscriptas.add(materia)
 	}
 
 	method desinscribir(materia) {
 		materia.desinscribir(self)
-		inscriptas.remove(materia)
 	}
 	
-	method inscripcionesFirmes() {
-		return inscriptas.filter({materia => materia.esInscriptFirme(self)})
+	method materiasInscriptasFirmes() {
+		return self.materiasInscriptas().filter({materia => materia.usaCupo(self)})
 	}
 	
-	method inscripcionesEnEspera() {
-		return inscriptas.filter({materia => not materia.esInscriptFirme(self)})
+	method materiasInscriptasEnEspera() {
+		return self.materiasInscriptas().filter({materia => not materia.usaCupo(self)})
+	}
+	
+	method inscriptaFirme(_materia) {
+		return self.materiasInscriptasFirmes().contains(_materia)
+	}
+
+	method inscriptaEnEspera(_materia) {
+		return self.materiasInscriptasEnEspera().contains(_materia)
 	}
 	
 }

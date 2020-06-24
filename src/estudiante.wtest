@@ -3,6 +3,8 @@ import example.*
 describe "Estudiante"{
 	
 	const roque
+	const maria
+	const andrea
 	
 	const elementos
 	const objetos1
@@ -20,7 +22,7 @@ describe "Estudiante"{
 	fixture {
 		objetos1 = new Materia()
 		matematica1  = new Materia()
-		objetos2 = new Materia(requisitos=#{objetos1, matematica1})
+		objetos2 = new Materia(requisitos=#{objetos1, matematica1}, cupo=2)
 		quimica = new Materia()
 		latin = new Materia()
 		elementos = new Materia()
@@ -34,8 +36,17 @@ describe "Estudiante"{
 		roque.aprobar(matematica1, 10)
 		roque.aprobar(objetos1, 8)
 		roque.inscribir(elementos)
+
+		maria = new Estudiante(carreras = #{programacion, medicina});
+		maria.aprobar(matematica1, 10)
+		maria.aprobar(objetos1, 8)
+		maria.aprobar(elementos,10)
+		maria.inscribir(objetos2)
 		
-			
+		andrea = new Estudiante(carreras = #{programacion, medicina});
+		andrea.aprobar(matematica1, 10)
+		andrea.aprobar(objetos1, 8)
+		andrea.aprobar(elementos,10)
 	}	
 	
 	test "aprobar" {
@@ -77,9 +88,35 @@ describe "Estudiante"{
 	test "inscribir" {
 		assert.throwsException({roque.inscribir(elementos)})
 		roque.inscribir(objetos2)
-		assert.that(roque.inscripta(elementos))
+		assert.that(objetos2.inscripto(roque))
+		assert.that(roque.inscriptaFirme(objetos2))
+		assert.notThat(roque.inscriptaEnEspera(objetos2))
+		
+		roque.desinscribir(objetos2)
+		assert.notThat(objetos2.inscripto(roque))
+		assert.notThat(roque.inscriptaFirme(objetos2))
+		assert.notThat(roque.inscriptaEnEspera(objetos2))
+		
+		
+		assert.throwsException({roque.desinscribir(objetos2)})
 	}
 	
+	test "inscripcion en espera" {
+		roque.inscribir(objetos2)
+		assert.that(objetos2.inscripto(roque))
+		assert.that(roque.inscriptaFirme(objetos2))
+		assert.notThat(roque.inscriptaEnEspera(objetos2))
+
+		andrea.inscribir(objetos2)
+		assert.that(objetos2.inscripto(andrea))
+		assert.notThat(andrea.inscriptaFirme(objetos2))
+		assert.that(andrea.inscriptaEnEspera(objetos2))
+		
+		roque.desinscribir(objetos2)
+		assert.notThat(objetos2.inscripto(roque))
+		assert.that(objetos2.inscripto(andrea))
+		assert.that(andrea.inscriptaFirme(objetos2))
+	}
 	
 	
 	
