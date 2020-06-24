@@ -95,12 +95,6 @@ class Materia {
 		inscripciones.remove(inscripcion)
 	}
 	
-	method desencolar() {
-		const enEspera = inscripciones.findOrDefault({inscripcion => not inscripcion.usaCupo()}, null)
-		if(enEspera != null) {
-			enEspera.firme(true)
-		}
-	}
 
     method inscripto(_estudiante) {
 		return inscripciones.any({inscripcion => inscripcion.estudiante() == _estudiante})
