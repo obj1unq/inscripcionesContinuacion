@@ -1,3 +1,23 @@
+object listUtils {
+	
+	
+	method indexOf(list, element) {
+		if(not list.contains(element)) {
+			self.error("element " + element + "is not present on list" + element)
+		}
+		return self.indexOf(list, element, 0)	
+	}
+	
+	method indexOf(list, element, counter) {
+		if (list.get(counter) == element) {
+			return counter
+		}
+		else {
+			return self.indexOf(list, element, counter + 1)
+		}
+	}
+}
+
 class Carrera {
 	const property materias
 	
@@ -5,33 +25,6 @@ class Carrera {
 		return materias.contains(materia)
 	}
 }
-
-class Inscripcion{
-	const property estudiante
-	const property materia
-	
-	method usaCupo() 
-	method desinscribir() {
-		materia.removerInscripcion(self)
-	}
-}
-class InscripcionFirme inherits Inscripcion{
-	
-	override method usaCupo() { return true }
-	override method desinscribir() {
-		super()
-		if(materia.hayInscripcionEnEspera()) {
-			const proximo = materia.proximoEnEspera()
-			materia.removerInscripcion(proximo)
-			materia.agregarInscripcion(new InscripcionFirme(materia=proximo.materia(), estudiante = proximo.estudiante()))
-		}
-	}	
-}
-
-class InscripcionEnEspera inherits Inscripcion{
-	override method usaCupo() { return false }
-}
-
 
 class Cursada {
 	const property materia
@@ -42,84 +35,48 @@ class Materia {
 	const requisitos = #{}
 	const cupo = 20
 	
-	const inscripciones = []
+	const inscriptos = []
 	
 	method cumpleRequisitos(estudiante) {
 		return requisitos.all({requisito => estudiante.aprobada(requisito)})
 	}
 		
 	method cupoUsado() {
-		return inscripciones.count({inscripcion => inscripcion.usaCupo()})
+		return return inscriptos.size().min(cupo)
 	}
-	
-	method agregarInscripcion(_inscripcion) {
-	    inscripciones.add(_inscripcion)
-	}
-	
+		
 	method inscribir(_estudiante) {
 		self.validarNoInscripto(_estudiante)
-		
-		const inscripcion = if(self.cupoUsado() < cupo)  {
-			new InscripcionFirme(estudiante=_estudiante, materia=self) 
-		}
-		else {
-			new InscripcionEnEspera(estudiante=_estudiante, materia=self)	
-		}
-		 
-	    self.agregarInscripcion(inscripcion)
+	    inscriptos.add(_estudiante)
 	}
 	
-	method tieneInscripcion(estudiante) {
-		return inscripciones.any({inscripcion => inscripcion.estudiante() == estudiante})
-	}
 	
 	method validarNoInscripto(estudiante) {
-		if(self.tieneInscripcion(estudiante)) {
+		if(self.inscripto(estudiante)) {
 			self.error("El estudiante ya esta inscripto")
 		}
 	}
 	
 	method validarInscripto(estudiante) {
-		if(not self.tieneInscripcion(estudiante)) {
+		if(not self.inscripto(estudiante)) {
 			self.error("El estudiante no esta inscripto")
 		}
 	}
 	
 	method desinscribir(alumno) {
 		self.validarInscripto(alumno)
-		const inscripcion = inscripciones.find({inscripcion => inscripcion.estudiante() == alumno})
-		inscripcion.desinscribir()
+		inscriptos.remove(alumno)
 	}
 	
-	method removerInscripcion(inscripcion) {
-		inscripciones.remove(inscripcion)
-	}
-	
-	method desencolar() {
-		const enEspera = inscripciones.findOrDefault({inscripcion => not inscripcion.usaCupo()}, null)
-		if(enEspera != null) {
-			enEspera.firme(true)
-		}
-	}
-
     method inscripto(_estudiante) {
-		return inscripciones.any({inscripcion => inscripcion.estudiante() == _estudiante})
+		return inscriptos.contains(_estudiante)
 	}
 	
 	method usaCupo(_estudiante) {
-		return inscripciones.any({inscripcion => inscripcion.estudiante() == _estudiante and inscripcion.usaCupo()})
+		return listUtils.indexOf(inscriptos, _estudiante) < cupo
 	}
-	
-	method hayInscripcionEnEspera() {
-		return inscripciones.any({inscripcion=> not inscripcion.usaCupo()})
-	}
-
-	method proximoEnEspera() {
-		return inscripciones.find({inscripcion=> not inscripcion.usaCupo()})
-	}
-	
+		
 }
-
 
 class Estudiante {
 	
